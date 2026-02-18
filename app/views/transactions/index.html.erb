@@ -1,8 +1,33 @@
 <h1>KelloggCoin Ledger</h1>
 
 <!-- Step 1: List all transactions, starting with the ICO -->
-
+<ol>
+  <% @transactions.each do |transaction| %>
+    <% unless transaction.from_user.nil? %>
+      <li>
+        Transaction of <%= number_to_currency(transaction.amount) %> 
+        sent by <%= transaction.from_user.name %>
+      </li>
+    <% end %>
+  <% end %>
+</ol>
 <!-- Step 2: Calculate and display the balances -->
+
+<h2>User Balances</h2>
+
+<ul>
+  <% @users.each do |user| %>
+    <% 
+      incoming = Transaction.where({ "to_user_id" => user.id }).sum("amount")
+      outgoing = Transaction.where({ "from_user_id" => user.id }).sum("amount")
+      balance = incoming - outgoing
+    <% %>
+    
+    <li>
+      <strong><%= user.name %>:</strong> <%= balance %> KC
+    </li>
+  <% end %>
+</ul>
 
 <!-- 
 Expected balances:
